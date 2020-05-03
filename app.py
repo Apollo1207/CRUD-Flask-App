@@ -1,9 +1,21 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import json
+import os
+
+with open('secret.json') as f:
+    SECRET = json.load(f)
+
+DB_URI = "mysql+pymysql://{user}:{password}@{host}:{port}/{db}".format(
+    user=SECRET["user"],
+    password=SECRET["password"],
+    host=SECRET["host"],
+    port=SECRET["port"],
+    db=SECRET["db"])
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
 db = SQLAlchemy(app)
 
 
@@ -62,4 +74,5 @@ def update(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    db.create_all()
+    app.run(debug=True, port=81)
