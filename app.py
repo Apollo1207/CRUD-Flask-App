@@ -1,13 +1,13 @@
-from flask import Flask, render_template, url_for, request, redirect
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 import json
-import os
+from datetime import datetime
 
-with open('secret.json') as f:
+from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy
+
+with open("secret.json") as f:
     SECRET = json.load(f)
 
-DB_URI = "mysql+pymysql://{user}:{password}@{host}:{port}/{db}".format(
+DB_URI = "mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}".format(
     user=SECRET["user"],
     password=SECRET["password"],
     host=SECRET["host"],
@@ -15,6 +15,7 @@ DB_URI = "mysql+pymysql://{user}:{password}@{host}:{port}/{db}".format(
     db=SECRET["db"])
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
 db = SQLAlchemy(app)
 
